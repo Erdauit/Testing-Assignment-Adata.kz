@@ -115,13 +115,27 @@ GROUP BY p.position_name;
 
 -----4)	Сделать представление, в котором собраны данные по должностям (Должность, в каких отделах встречается эта должность (в виде массива), список сотрудников, начавших работать в этом отделе не раньше 2021 года (Сгруппировать по отделам) (в формате JSON), средняя заработная плата по должности)
 
-SELECT p.position_name
+CREATE OR REPLACE VIEW Position_Info_View AS
+SELECT
+    p.position_name AS Position,
+    ARRAY_AGG(d.department_name) AS Departments,
+    json_agg(
+        json_build_object(
+            'employee_id', e.employee_id,
+            'first_name', e.first_name,
+            'last_name', e.last_name,
+            'hire_date', e.hire_date
+        )
+    ) FILTER (WHERE e.hire_date >= '2021-01-01') AS Employees,
+    ROUND(AVG(s.salary), 2) AS Average_Salary
 FROM Positions p
-JOIN Employees emp ON p.position_id = emp.position_id
-JOIN Employee_Department_Binding edb on emp.employee_id = edb.employee_id
-JOIN departments d on edb.department_id = d.department_id
-JOIN Salaries s ON emp.employee_id = s.employee_id
-GROUP BY p.position_name;
+JOIN Employees e ON p.position_id = e.position_id
+JOIN Salaries s ON e.employee_id = s.employee_id
+JOIN Employee_Department_Binding edb ON e.employee_id = edb.employee_id
+JOIN Departments d ON edb.department_id = d.department_id
+GROUP BY p.position_id;
 
+
+SELECT * FROM Position_Info_View;
 
 
