@@ -4,22 +4,21 @@ import xml.etree.ElementTree as ET
 app = Flask(__name__)
 
 def json_to_xml(json_data):
-    def parse_dict(parent, data):
-        for key, value in data.items():
-            if isinstance(value, dict):
-                node = ET.SubElement(parent, key)
-                parse_dict(node, value)
-            elif isinstance(value, list):
-                for item in value:
-                    node = ET.SubElement(parent, key)
-                    parse_dict(node, item)
-            else:
-                node = ET.SubElement(parent, key)
-                node.text = str(value)
+    def parse_data(parent, data):  
+        if isinstance(data, dict):  # Если данные являются словарем
+            for key, value in data.items():  # проходимся по слвоарю ключ и занчение
+                node = ET.SubElement(parent, key) 
+                parse_data(node, value) # рекурсия
+        elif isinstance(data, list):  #для листа
+            for item in data:  
+                node = ET.SubElement(parent, 'item')  
+                parse_data(node, item)  
+        else:  
+            parent.text = str(data) 
 
-    root = ET.Element('root')
-    parse_dict(root, json_data)
-    return ET.tostring(root, encoding='utf-8')
+    root = ET.Element('root')  
+    parse_data(root, json_data) 
+    return ET.tostring(root, encoding='utf-8') 
 
 @app.route('/json-to-xml', methods=['POST'])
 def convert_json_to_xml():
