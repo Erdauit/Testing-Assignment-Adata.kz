@@ -89,7 +89,7 @@ JOIN Employee_Department_Binding edb ON emp.employee_id = edb.employee_id
 JOIN Departments D on D.department_id = edb.department_id
 JOIN Positions p ON emp.position_id = p.position_id
 JOIN Salaries S on emp.employee_id = S.employee_id
-WHERE department_name = 'Security Department';
+WHERE department_name = 'Marketing Department' and emp.first_name = 'David';
 
 -----2)	Посчитать среднюю заработную плату работников по отделам
 SELECT d.department_name, AVG(s.salary) AS average_salary
