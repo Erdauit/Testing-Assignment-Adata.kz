@@ -1,7 +1,7 @@
 # Testing-Assignment-Adata.kz
 
 1. API is working, checked with postman
-   1.1 Checked with lists (working)
+   _ Checked with lists (working)
 2. In parsed used only requests :(
    2.1 Fixed problems with data
    2.2 No selenium
